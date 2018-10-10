@@ -238,6 +238,17 @@ function civicrm_api3_civi_outlook_createactivity($params) {
               $contact['last_name'] = $parts[2];
             }
           }
+          if (isset($params['group'])) {
+            $groups = explode(',', $params['group']);
+            $groupContacts = array();
+            foreach ($groups as $g) {
+              $gc = array();
+              $gc['group_id'] = $g;
+              $gc['contact_id'] = '$value.id';
+              array_push($groupContacts, $gc);
+            }
+            $contact['api.GroupContact.create'] = $groupContacts;
+          }
           $contactCreate = civicrm_api3('Contact', 'create', $contact );
           $singleContactCreated = array();
           $singleContactCreated['singleContactCreated'] = $contactCreate['id'];
